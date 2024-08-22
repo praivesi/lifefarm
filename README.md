@@ -24,16 +24,23 @@ Rust
 ## Setup (Mac)
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
 source $HOME/.cargo/env
+
 rustc --version
+
 cargo new whistle
+
 cargo build
+
 cargo run
 
 ## Architecture
 
 Lifefarm의 모듈은 크게 세 가지로 나뉜다.
+
 현재(24.08.23)는 프로젝트의 극초기 단계이므로 rough한 컨셉만 가지고 간다.
+
 (\* 추후 개발이 진행되면서 지속적으로 구체화할 계획)
 
 1. Farm Blueprint
