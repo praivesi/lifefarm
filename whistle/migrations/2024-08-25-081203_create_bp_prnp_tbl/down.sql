@@ -1,0 +1,1 @@
+DROP TABLE create_bp_prnp_tbl;
