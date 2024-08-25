@@ -4,3 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+chrono = "0.4.38"
+diesel = {version="2.2.3", features = ["sqlite"]}
+dotenv = "0.15.0"
+include_dir = "0.7.4"
+lazy_static = "1.5.0"
