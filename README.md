@@ -35,6 +35,12 @@ cargo build
 
 cargo run
 
+## Test
+
+cargo test
+
+cargo test -- --nocapture (test 시에도 println!() 출력)
+
 ## Architecture
 
 Lifefarm의 모듈은 크게 세 가지로 나뉜다.
