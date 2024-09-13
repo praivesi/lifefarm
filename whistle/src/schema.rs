@@ -2,7 +2,7 @@
 
 diesel::table! {
     cfg_user_tbl (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         name -> Text,
         death_age -> Integer,
         birth_date -> Date,

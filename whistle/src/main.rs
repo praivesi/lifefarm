@@ -1,6 +1,8 @@
 extern crate dotenv;
 
+pub mod api;
 pub mod config;
+pub mod schema;
 
 use std::env;
 use config::database::create_db;

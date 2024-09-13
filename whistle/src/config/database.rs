@@ -65,7 +65,7 @@ fn run_migrations() {
             match mg_file.contents_utf8() {
                 Some(sql) => match diesel::sql_query(sql).execute(&mut *conn) {
                     Ok(_) => {},
-                    Err(e) => {}
+                    Err(_e) => {}
                     // Ok(_) => {trace!("Migration file: {:?}", mg_file.path().display())},
                     // Err(e) => {error!("Failed to run migration: {}", e)},
                 },
