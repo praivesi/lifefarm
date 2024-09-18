@@ -44,6 +44,8 @@ diesel migration run
 
 diesel print-schema > src/schema.rs
 
+if necessary) diesel migration revert
+
 
 ## Test
 
