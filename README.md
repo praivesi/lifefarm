@@ -35,6 +35,14 @@ cargo build
 
 cargo run
 
+# Diesel Migration
+diesel migration generate {migration_name}
+
+-- setup up.sql, down.sql --
+
+diesel migration run
+
+
 ## Test
 
 cargo test
