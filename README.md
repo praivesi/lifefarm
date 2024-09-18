@@ -42,6 +42,8 @@ diesel migration generate {migration_name}
 
 diesel migration run
 
+diesel print-schema > src/schema.rs
+
 
 ## Test
 
