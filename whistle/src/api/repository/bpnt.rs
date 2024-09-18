@@ -3,7 +3,7 @@
  * @brief   This module abstracts database operations for 'bpnt_tbl' table.
  *
  * @author  hansaem, oh (praivesi@gmail.com)
- * @date    2024/09/13 22:04 created.
+ * @date    2024/09/18 18:57 created.
  * 
 **/
 use crate::api::entity::{NewBluprint, UpdateBlueprint, Blueprint};
