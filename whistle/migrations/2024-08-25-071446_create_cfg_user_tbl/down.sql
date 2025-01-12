@@ -1,1 +1,0 @@
-DROP TABLE cfg_user_tbl;
