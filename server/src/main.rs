@@ -3,6 +3,7 @@ extern crate dotenv;
 pub mod api;
 pub mod config;
 pub mod schema;
+pub mod util;
 
 use std::env;
 use config::database::create_db;
@@ -11,6 +12,16 @@ const DOTENV_CONTENT: &str = include_str!("../.env");
 
 fn main() {
     load_dotenv();
+
+    match farm_logger::setup_logger() {
+        Ok(_) => {
+            info!("Log initialized.");
+        },
+        Err(err_msg) => {
+            error!("failed to set up logger. {}", err_msg);
+            return;
+        }
+    }
 
     create_db();
 }
