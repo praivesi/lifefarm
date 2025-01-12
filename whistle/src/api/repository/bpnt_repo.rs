@@ -1,5 +1,5 @@
 /**
- * @file    bpnt.rs
+ * @file    bpnt_repo.rs
  * @brief   This module abstracts database operations for 'bpnt_tbl' table.
  *
  * @author  hansaem, oh (praivesi@gmail.com)
@@ -39,7 +39,7 @@ pub fn add_blueprint(conn: &mut SqliteConnection, goal: &str, exp_hour: i32, far
         .expect("Error loading the last inserted blueprint")
 }
 
-pub fn read_user(conn: &mut SqliteConnection, read_id: i32) -> Option<Blueprint> {
+pub fn read_bpnt(conn: &mut SqliteConnection, read_id: i32) -> Option<Blueprint> {
     all_bpnts
         .filter(id.eq(read_id))
         .first::<Blueprint>(conn)
@@ -61,7 +61,7 @@ pub fn update_blueprint(conn: &mut SqliteConnection, update_id: i32, update_goal
                             .expect("Error updating blueprint");
 
     if 1 == count {
-        read_user(conn, update_id)
+        read_bpnt(conn, update_id)
     }
     else {
         None
@@ -100,7 +100,7 @@ mod tests {
 
         delete_blueprint(conn, inserted_bpnt.id);
 
-        let deleted_bpnt = read_user(conn, inserted_bpnt.id);
+        let deleted_bpnt = read_bpnt(conn, inserted_bpnt.id);
         
         // assert
         assert!(new_goal == inserted_bpnt.goal);

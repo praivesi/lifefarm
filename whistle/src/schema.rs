@@ -12,10 +12,20 @@ diesel::table! {
 }
 
 diesel::table! {
-    cfg_user_tbl (id) {
+    fpnt_tbl (id) {
+        id -> Integer,
+        bpnt_id -> Integer,
+        cert -> Nullable<Binary>,
+        ctime -> Date,
+        mtime -> Date,
+    }
+}
+
+diesel::table! {
+    user_tbl (id) {
         id -> Integer,
         name -> Text,
-        death_age -> Integer,
+        predict_death_age -> Integer,
         birth_date -> Date,
         ctime -> Date,
         mtime -> Date,
@@ -24,5 +34,6 @@ diesel::table! {
 
 diesel::allow_tables_to_appear_in_same_query!(
     bpnt_tbl,
-    cfg_user_tbl,
+    fpnt_tbl,
+    user_tbl,
 );

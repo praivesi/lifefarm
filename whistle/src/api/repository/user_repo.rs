@@ -1,5 +1,5 @@
 /**
- * @file    cfg_user.rs
+ * @file    user_repo.rs
  * @brief   This module abstracts database operations for 'cfg_user_tbl' table.
  *
  * @author  hansaem, oh (praivesi@gmail.com)
@@ -8,8 +8,8 @@
 **/
 use crate::api::entity::{NewUser, UpdateUser, User};
 use crate::config::database::get_connection;
-use crate::schema::cfg_user_tbl::{self, id};
-use crate::schema::cfg_user_tbl::dsl::{cfg_user_tbl as all_users};
+use crate::schema::user_tbl::{self, id};
+use crate::schema::user_tbl::dsl::{user_tbl as all_users};
 
 use diesel::expression_methods::ExpressionMethods;
 use diesel::OptionalExtension;
@@ -19,16 +19,16 @@ use diesel::sqlite::SqliteConnection;
 
 use chrono::NaiveDate;
 
-pub fn add_user(conn: &mut SqliteConnection, name: &str, death_age: i32, birth_date: NaiveDate) -> User {
+pub fn add_user(conn: &mut SqliteConnection, name: &str, predict_death_age: i32, birth_date: NaiveDate) -> User {
     let new_user = NewUser {
         name: name.to_string(),
-        death_age,
+        predict_death_age,
         birth_date,
         ctime: chrono::Utc::now().naive_utc().date(),
         mtime: chrono::Utc::now().naive_utc().date()
     };
 
-    diesel::insert_into(cfg_user_tbl::table)
+    diesel::insert_into(user_tbl::table)
         .values(&new_user)
         .execute(conn)
         .expect("Error saving new user");
@@ -47,10 +47,10 @@ pub fn read_user(conn: &mut SqliteConnection, read_id: i32) -> Option<User> {
         .expect("Error reading user")
 }
 
-pub fn update_user(conn: &mut SqliteConnection, update_id: i32, update_name: &str, update_death_age: i32, update_birth_date: NaiveDate) -> Option<User> {
+pub fn update_user(conn: &mut SqliteConnection, update_id: i32, update_name: &str, update_predict_death_age: i32, update_birth_date: NaiveDate) -> Option<User> {
     let changeset = UpdateUser {
         name: update_name.to_string(),
-        death_age: update_death_age,
+        predict_death_age: update_predict_death_age,
         birth_date: update_birth_date,
         mtime: chrono::Utc::now().naive_utc().date()
     };
@@ -84,17 +84,17 @@ mod tests {
         let conn = &mut *get_connection();
 
         let new_name = "my_name";
-        let new_death_age = 10;
+        let new_predict_death_age = 10;
         let new_birth_date = NaiveDate::from_ymd(0, 1, 1);
 
         let update_name = "my_update_name";
 
         // act
-        let inserted_user = add_user(conn, new_name, new_death_age, new_birth_date);
+        let inserted_user = add_user(conn, new_name, new_predict_death_age, new_birth_date);
 
         let updated_user = update_user(conn, inserted_user.id, 
                                                                 update_name,
-                                             inserted_user.death_age,
+                                             inserted_user.predict_death_age,
                                             inserted_user.birth_date);
 
         delete_user(conn, inserted_user.id);
