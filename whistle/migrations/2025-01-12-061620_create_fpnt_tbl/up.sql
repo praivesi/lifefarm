@@ -1,0 +1,7 @@
+CREATE TABLE fpnt_tbl (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    bpnt_id INTEGER NOT NULL,
+    cert BLOB,
+    ctime DATE NOT NULL,
+    mtime DATE NOT NULL
+);
