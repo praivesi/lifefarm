@@ -1,6 +1,6 @@
 /**
- * @file    bpnt_repo.rs
- * @brief   This module abstracts database operations for 'bpnt_tbl' table.
+ * @file    blpt_repo.rs
+ * @brief   This module abstracts database operations for 'blpt_tbl' table.
  *
  * @author  hansaem, oh (praivesi@gmail.com)
  * @date    2024/09/18 18:57 created.
@@ -8,8 +8,8 @@
 **/
 use crate::entity::{NewBluprint, UpdateBlueprint, Blueprint};
 use crate::config::database::get_connection;
-use crate::schema::bpnt_tbl::{self, id};
-use crate::schema::bpnt_tbl::dsl::{bpnt_tbl as all_bpnts};
+use crate::schema::blpt_tbl::{self, id};
+use crate::schema::blpt_tbl::dsl::{blpt_tbl as all_blpts};
 
 use diesel::expression_methods::ExpressionMethods;
 use diesel::OptionalExtension;
@@ -20,7 +20,7 @@ use diesel::sqlite::SqliteConnection;
 use chrono::NaiveDate;
 
 pub fn add_blueprint(conn: &mut SqliteConnection, goal: &str, exp_hour: i32, farm_portion: f32) -> Blueprint {
-    let new_bpnt = NewBluprint {
+    let new_blpt = NewBluprint {
         goal: goal.to_string(),
         exp_hour,
         farm_portion,
@@ -28,19 +28,19 @@ pub fn add_blueprint(conn: &mut SqliteConnection, goal: &str, exp_hour: i32, far
         mtime: chrono::Utc::now().naive_utc().date()
     };
 
-    diesel::insert_into(bpnt_tbl::table)
-        .values(&new_bpnt)
+    diesel::insert_into(blpt_tbl::table)
+        .values(&new_blpt)
         .execute(conn)
         .expect("Error saving new blueprint");
 
-    all_bpnts
+    all_blpts
         .order(id.desc())
         .first::<Blueprint>(conn)
         .expect("Error loading the last inserted blueprint")
 }
 
-pub fn read_bpnt(conn: &mut SqliteConnection, read_id: i32) -> Option<Blueprint> {
-    all_bpnts
+pub fn read_blpt(conn: &mut SqliteConnection, read_id: i32) -> Option<Blueprint> {
+    all_blpts
         .filter(id.eq(read_id))
         .first::<Blueprint>(conn)
         .optional()
@@ -55,13 +55,13 @@ pub fn update_blueprint(conn: &mut SqliteConnection, update_id: i32, update_goal
         mtime: chrono::Utc::now().naive_utc().date()
     };
 
-    let count = diesel::update(all_bpnts.filter(id.eq(update_id)))
+    let count = diesel::update(all_blpts.filter(id.eq(update_id)))
                             .set(&changeset)
                             .execute(conn)
                             .expect("Error updating blueprint");
 
     if 1 == count {
-        read_bpnt(conn, update_id)
+        read_blpt(conn, update_id)
     }
     else {
         None
@@ -69,7 +69,7 @@ pub fn update_blueprint(conn: &mut SqliteConnection, update_id: i32, update_goal
 }
 
 pub fn delete_blueprint(conn: &mut SqliteConnection, delete_id: i32) {
-    diesel::delete(all_bpnts.filter(id.eq(delete_id)))
+    diesel::delete(all_blpts.filter(id.eq(delete_id)))
         .execute(conn)
         .expect("Error deleting blueprint");
 }
@@ -79,7 +79,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_bpnt_tbl() {
+    fn test_blpt_tbl() {
         // arrange
         let conn = &mut *get_connection();
 
@@ -90,22 +90,22 @@ mod tests {
         let update_goal = "my_update_goal";
 
         // act
-        let inserted_bpnt = add_blueprint(conn, new_goal, new_exp_hour, new_farm_portion);
+        let inserted_blpt = add_blueprint(conn, new_goal, new_exp_hour, new_farm_portion);
 
-        let updated_bpnt = update_blueprint(conn, 
-                                            inserted_bpnt.id, 
+        let updated_blpt = update_blueprint(conn, 
+                                            inserted_blpt.id, 
                                             update_goal,
-                                            inserted_bpnt.exp_hour,
-                                            inserted_bpnt.farm_portion);
+                                            inserted_blpt.exp_hour,
+                                            inserted_blpt.farm_portion);
 
-        delete_blueprint(conn, inserted_bpnt.id);
+        delete_blueprint(conn, inserted_blpt.id);
 
-        let deleted_bpnt = read_bpnt(conn, inserted_bpnt.id);
+        let deleted_blpt = read_blpt(conn, inserted_blpt.id);
         
         // assert
-        assert!(new_goal == inserted_bpnt.goal);
-        assert!(true == updated_bpnt.is_some());
-        assert!(update_goal == updated_bpnt.unwrap().goal);
-        assert!(true == deleted_bpnt.is_none());
+        assert!(new_goal == inserted_blpt.goal);
+        assert!(true == updated_blpt.is_some());
+        assert!(update_goal == updated_blpt.unwrap().goal);
+        assert!(true == deleted_blpt.is_none());
     }
 }

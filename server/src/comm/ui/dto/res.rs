@@ -4,7 +4,7 @@ use utoipa::ToSchema;
 /*
 
 diesel::table! {
-    bpnt_tbl (id) {
+    blpt_tbl (id) {
         id -> Integer,
         goal -> Text,
         exp_hour -> Integer,
@@ -15,9 +15,9 @@ diesel::table! {
 }
 
 diesel::table! {
-    fpnt_tbl (id) {
+    ftpt_tbl (id) {
         id -> Integer,
-        bpnt_id -> Integer,
+        blpt_id -> Integer,
         cert -> Nullable<Binary>,
         ctime -> Date,
         mtime -> Date,
@@ -36,6 +36,13 @@ diesel::table! {
 }
 */
 
+#[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
+pub struct GetUserResponse {
+    pub id: i32,
+    pub name: String,
+    pub predict_death_age: i32,
+    pub birth_date: i64
+}
 
 #[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
 pub struct GetBlptListResponse {
@@ -58,6 +65,6 @@ pub struct GetFtptListResponse {
 #[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
 pub struct GetFtptRepsponse {
     pub id: i32,
-    pub bpnt_id: i32,
+    pub blpt_id: i32,
     pub cert: Option<String>
 }

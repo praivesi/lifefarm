@@ -7,7 +7,7 @@
  * 
 **/
 use chrono::NaiveDate;
-use crate::schema::{user_tbl, bpnt_tbl, fpnt_tbl};
+use crate::schema::{user_tbl, blpt_tbl, ftpt_tbl};
 
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -56,7 +56,7 @@ pub struct NewUser {
 }
 
 #[derive(Queryable, Selectable, QueryableByName, Serialize, Deserialize, Debug)]
-#[diesel(table_name = bpnt_tbl)]
+#[diesel(table_name = blpt_tbl)]
 pub struct Blueprint {
     pub id: i32, // Key
     pub goal: String,
@@ -68,7 +68,7 @@ pub struct Blueprint {
 
 
 #[derive(AsChangeset)]
-#[diesel(table_name = bpnt_tbl)]
+#[diesel(table_name = blpt_tbl)]
 pub struct UpdateBlueprint {
     pub goal: String,
     pub exp_hour: i32,
@@ -90,7 +90,7 @@ impl Default for Blueprint {
 }
 
 #[derive(Insertable, Serialize, Deserialize, Debug)]
-#[diesel(table_name = bpnt_tbl)]
+#[diesel(table_name = blpt_tbl)]
 pub struct NewBluprint {
     pub goal: String,
     pub exp_hour: i32,
@@ -100,20 +100,20 @@ pub struct NewBluprint {
 }
 
 #[derive(Queryable, Selectable, QueryableByName, Serialize, Deserialize, Debug)]
-#[diesel(table_name = fpnt_tbl)]
+#[diesel(table_name = ftpt_tbl)]
 pub struct Footprint {
     pub id: i32, // Key
-    pub bpnt_id: i32,
+    pub blpt_id: i32,
     pub cert: Option<Vec<u8>>,
     pub ctime: NaiveDate,
     pub mtime: NaiveDate
 }
 
 #[derive(AsChangeset)]
-#[diesel(table_name = fpnt_tbl)]
+#[diesel(table_name = ftpt_tbl)]
 pub struct UpdateFootprint {
     pub id: i32, // Key
-    pub bpnt_id: i32,
+    pub blpt_id: i32,
     pub cert: Option<Vec<u8>>,
     pub mtime: NaiveDate
 }
@@ -122,7 +122,7 @@ impl Default for Footprint {
     fn default() -> Self {
         Footprint {
             id: 0,
-            bpnt_id: 0,
+            blpt_id: 0,
             cert: None,
             ctime: NaiveDate::from_ymd(0, 1, 1),
             mtime: NaiveDate::from_ymd(0, 1, 1),
@@ -131,9 +131,9 @@ impl Default for Footprint {
 }
 
 #[derive(Insertable, Serialize, Deserialize, Debug)]
-#[diesel(table_name = fpnt_tbl)]
+#[diesel(table_name = ftpt_tbl)]
 pub struct NewFootprint {
-    pub bpnt_id: i32,
+    pub blpt_id: i32,
     pub cert: Option<Vec<u8>>,
     pub ctime: NaiveDate,
     pub mtime: NaiveDate 

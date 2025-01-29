@@ -1,7 +1,7 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    bpnt_tbl (id) {
+    blpt_tbl (id) {
         id -> Integer,
         goal -> Text,
         exp_hour -> Integer,
@@ -12,9 +12,9 @@ diesel::table! {
 }
 
 diesel::table! {
-    fpnt_tbl (id) {
+    ftpt_tbl (id) {
         id -> Integer,
-        bpnt_id -> Integer,
+        blpt_id -> Integer,
         cert -> Nullable<Binary>,
         ctime -> Date,
         mtime -> Date,
@@ -33,7 +33,7 @@ diesel::table! {
 }
 
 diesel::allow_tables_to_appear_in_same_query!(
-    bpnt_tbl,
-    fpnt_tbl,
+    blpt_tbl,
+    ftpt_tbl,
     user_tbl,
 );

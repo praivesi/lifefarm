@@ -40,7 +40,9 @@ pub fn init_router() -> Router {
 fn create_api_router() -> Router {
     /* API ENDPOINT */
     Router::new()
+            .route(ui_api_enp("/user").as_str(), get(handle_get_user))
             .route(ui_api_enp("/blpt").as_str(), get(handle_get_blpt))
+            .route(ui_api_enp("/ftpt").as_str(), get(handle_get_ftpt))
 }
 
 // fallback_handler: return 'index.html' when 404 Error occurred
