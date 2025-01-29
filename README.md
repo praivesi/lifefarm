@@ -11,11 +11,7 @@ LifeFarm은 매일의 삶을 살아가는 이들이 인생의 방향을 놓치�
 2. 하루 하루의 삶을 기록하며 (Daily Farming System)
 3. 변화해가는 농장을 보여주며 피드백을 제공한다. (Farm Visualizer)
 
-## Code Name
 
-whistle
-
-- 이무진-'휘파람'
 
 ## Language
 
