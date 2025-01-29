@@ -1,1 +1,0 @@
-DROP TABLE bpnt_tbl;

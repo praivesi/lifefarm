@@ -1,0 +1,1 @@
+DROP TABLE blpt_tbl;

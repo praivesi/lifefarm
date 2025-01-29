@@ -1,0 +1,30 @@
+[package]
+name = "lifefarm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.8.1"
+axum-server = { version = "0.7.1", features = ["tls-rustls"]}
+chrono = {version="0.4.38", features = ["serde"]}
+diesel = {version="2.2.3", features = ["sqlite", "chrono"]}
+dotenv = "0.15.0"
+fern = "0.7.1"
+hyper = "1.6.0"
+include_dir = "0.7.4"
+lazy_static = "1.5.0"
+log = "0.4.25"
+reqwest = "0.12.12"
+serde = {version="1.0.210", features = ["derive"]}
+utoipa = { version="5.2.0", features = ["axum_extras", "openapi_extensions", "time"]}
+utoipa-axum = { version = "0.2.0" }
+utoipa-swagger-ui = {version="9.0.0", features = ["axum"]}
+rustls = "0.23.20"
+colored = "2.1.0"
+axum-test = "15.2.0"
+libsqlite3-sys = {version = "0.28.0", features = ["bundled"]}
+signal-hook = "0.3.17"
+tower = "0.4.13"
+tower-serve-static = "0.1.1"
+tower-http = { version = "0.5.2", features=["full"]}
+tokio = {version = "1.40.1", features=["full"]}

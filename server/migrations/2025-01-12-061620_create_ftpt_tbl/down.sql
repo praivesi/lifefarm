@@ -1,0 +1,1 @@
+DROP TABLE ftpt_tbl;
