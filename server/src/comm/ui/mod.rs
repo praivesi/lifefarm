@@ -1,2 +1,3 @@
-pub mod req;
-pub mod res;
+pub mod dto;
+pub mod ui_core;
+pub mod ui_server;

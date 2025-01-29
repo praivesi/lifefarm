@@ -19,7 +19,7 @@ pub fn setup_logger() -> Result<bool, String> {
         }
     };
 
-    let log_dir = path::log_dir();
+    let log_dir = path::log_dir_path();
 
     match fs::create_dir_all(log_dir.to_string()) {
         Ok(_) => { },

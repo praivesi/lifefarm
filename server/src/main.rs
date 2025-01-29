@@ -4,9 +4,13 @@ pub mod api;
 pub mod config;
 pub mod schema;
 pub mod util;
+pub mod constants;
+pub mod comm;
 
+use log::{info, error};
 use std::env;
 use config::database::create_db;
+use crate::util::farm_logger;
 
 const DOTENV_CONTENT: &str = include_str!("../.env");
 

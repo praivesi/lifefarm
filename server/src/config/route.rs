@@ -16,14 +16,13 @@ use include_dir::{include_dir, Dir, File};
 use crate::comm::ui::ui_server::*;
 
 static DIST_DIR: Dir<'static> = include_dir!("$CARGO_MANIFEST_DIR/static_dist");
-static DIST_ASSETS_DIR: Dir<'static> = include_dir!("$CARGO_MANIFEST_DIR/static_dist/assets");
 
 static API_ENP :&str = "/agent";
 static UI_API_ENP :&str= "/front";
-static STATIC_ASSET_ENP :&str = "/assets";
+static DIST_ENP :&str = "/";
 
 pub fn init_router() -> Router {
-    let static_assets_service = ServeDir::new(&DIST_ASSETS_DIR);
+    let static_service = ServeDir::new(&DIST_DIR);
 
     let api_routes = create_api_router();
 
@@ -33,7 +32,7 @@ pub fn init_router() -> Router {
         .allow_headers(Any);
 
     axum::Router::new()
-        .nest_service(STATIC_ASSET_ENP, static_assets_service)
+        .nest_service(DIST_ENP, static_service)
         .fallback(fallback_handler) // deal all 404 Request
         .merge(api_routes)
         .layer(cors)
@@ -41,8 +40,8 @@ pub fn init_router() -> Router {
 
 fn create_api_router() -> Router {
     /* API ENDPOINT */
-    let router = Router::new()
-            .route(ui_api_enp("/bpnt").as_str(), get(handle_get_bpnt));
+    Router::new()
+            .route(ui_api_enp("/bpnt").as_str(), get(handle_get_bpnt))
             // .route(api_enp("/register").as_str(), post(handle_post_register))
             // .route(api_enp("/info").as_str(), get(handle_get_info))
             // .route(api_enp("/:id/status").as_str(), post(handle_post_status))
