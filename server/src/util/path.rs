@@ -11,7 +11,7 @@ pub fn working_dir() -> String {
 
     #[cfg(not(target_os = "windows"))]
     {
-        constants::LINUX_UNIX_WORKING_DIR.to_string()
+        constants::LINUX_UNIX_MAC_WORKING_DIR.to_string()
     }
 }
 
@@ -20,10 +20,10 @@ pub fn db_dir_path() -> String {
     {
         format!("{}{}", constants::WINDOWS_WORKING_DIR, constants::WINDOWS_DATA_DIR)
     }
-
     #[cfg(not(target_os = "windows"))]
+
     {
-        format!("{}{}", constants::LINUX_UNIX_WORKING_DIR, constants::LINUX_UNIX_DATA_DIR)
+        format!("{}{}", constants::LINUX_UNIX_MAC_WORKING_DIR, constants::LINUX_UNIX_MAC_DATA_DIR)
     }
 }
 
@@ -35,7 +35,7 @@ pub fn log_dir_path() -> String {
 
     #[cfg(not(target_os = "windows"))]
     {
-        format!("{}{}", constants::LINUX_UNIX_WORKING_DIR, constants::LINUX_UNIX_DATA_DIR)
+        format!("{}{}", constants::LINUX_UNIX_MAC_WORKING_DIR, constants::LINUX_UNIX_MAC_DATA_DIR)
     }
 }
 

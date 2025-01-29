@@ -6,7 +6,7 @@
  * @date    2024/09/13 22:04 created.
  * 
 **/
-use crate::api::entity::{NewUser, UpdateUser, User};
+use crate::entity::{NewUser, UpdateUser, User};
 use crate::config::database::get_connection;
 use crate::schema::user_tbl::{self, id};
 use crate::schema::user_tbl::dsl::{user_tbl as all_users};

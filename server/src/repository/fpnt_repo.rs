@@ -6,7 +6,7 @@
  * @date    2025/01/12 15:28 created.
  * 
 **/
-use crate::api::entity::{NewFootprint, UpdateFootprint, Footprint};
+use crate::entity::{NewFootprint, UpdateFootprint, Footprint};
 use crate::config::database::get_connection;
 use crate::schema::fpnt_tbl::{self, id};
 use crate::schema::fpnt_tbl::dsl::{fpnt_tbl as all_fpnts};

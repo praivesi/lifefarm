@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 const SERVER_CRT: &str = include_str!("../../resources/ssl/server.crt");
 const SERVER_KEY: &str = include_str!("../../resources/ssl/server.key");
 
-pub struct RestResult {
+pub struct ErrorResult {
     pub code: StatusCode,
     pub err_msg: String
 }
@@ -30,7 +30,7 @@ impl RestResponse {
     }
 }
 
-pub fn json_from(result: RestResult) -> (StatusCode, axum::Json<RestResponse>) {
+pub fn json_from(result: ErrorResult) -> (StatusCode, axum::Json<RestResponse>) {
     (result.code, Json(RestResponse::error(result.err_msg)))
 }
 

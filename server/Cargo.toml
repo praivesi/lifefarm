@@ -1,5 +1,5 @@
 [package]
-name = "whistle"
+name = "lifefarm"
 version = "0.1.0"
 edition = "2021"
 
@@ -27,3 +27,4 @@ signal-hook = "0.3.17"
 tower = "0.4.13"
 tower-serve-static = "0.1.1"
 tower-http = { version = "0.5.2", features=["full"]}
+tokio = {version = "1.40.1", features=["full"]}

@@ -6,7 +6,7 @@
  * @date    2024/09/18 18:57 created.
  * 
 **/
-use crate::api::entity::{NewBluprint, UpdateBlueprint, Blueprint};
+use crate::entity::{NewBluprint, UpdateBlueprint, Blueprint};
 use crate::config::database::get_connection;
 use crate::schema::bpnt_tbl::{self, id};
 use crate::schema::bpnt_tbl::dsl::{bpnt_tbl as all_bpnts};

@@ -1,6 +1,5 @@
 
 use fern::Dispatch;
-use log::error;
 
 use std::fs::OpenOptions;
 use std::path::Path;
@@ -14,25 +13,29 @@ pub fn setup_logger() -> Result<bool, String> {
     match verify_log_file_size() {
         Ok(_) => {},
         Err(e) => {
-            error!("checking previous log file size failed.");
+            eprintln!("checking previous log file size failed.");
             return Err(e.to_string());
         }
     };
+
+    println!("verfiy finished");
 
     let log_dir = path::log_dir_path();
 
     match fs::create_dir_all(log_dir.to_string()) {
         Ok(_) => { },
         Err(err) => {
-            error!("failed to create directory. (path: {})", log_dir);
+            eprintln!("failed to create directory. (path: {})", log_dir);
             return Err(err.to_string());
         }
     }
 
+    println!("create_dir finished.");
+
     match open_log_file(&path::log_file_path()) {
         Ok(_) => Ok(true),
         Err(e) => {
-            error!("open log file failed.");
+            eprintln!("open log file failed.");
             return Err(e.to_string())
         }
     }
