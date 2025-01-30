@@ -9,6 +9,7 @@ pub mod comm;
 pub mod entity;
 pub mod repository;
 pub mod core;
+pub mod enums;
 
 use log::{info, warn, error};
 use std::env;
