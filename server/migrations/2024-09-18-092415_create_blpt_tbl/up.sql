@@ -3,6 +3,6 @@ CREATE TABLE blpt_tbl (
     goal varchar(255) NOT NULL,
     exp_hour INTEGER NOT NULL,
     farm_portion REAL NOT NULL,
-    ctime DATE NOT NULL,
-    mtime DATE NOT NULL
+    ctime BIGINT NOT NULL,
+    mtime BIGINT NOT NULL
 );

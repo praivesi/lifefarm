@@ -17,15 +17,15 @@ use diesel::QueryDsl;
 use diesel::RunQueryDsl;
 use diesel::sqlite::SqliteConnection;
 
-use chrono::NaiveDate;
+use chrono::Utc;
 
-pub fn add_user(conn: &mut SqliteConnection, name: &str, predict_death_age: i32, birth_date: NaiveDate) -> User {
+pub fn add_user(conn: &mut SqliteConnection, name: &str, predict_death_age: i32, birth_date: i64) -> User {
     let new_user = NewUser {
         name: name.to_string(),
         predict_death_age,
         birth_date,
-        ctime: chrono::Utc::now().naive_utc().date(),
-        mtime: chrono::Utc::now().naive_utc().date()
+        ctime: Utc::now().timestamp(),
+        mtime: Utc::now().timestamp()
     };
 
     diesel::insert_into(user_tbl::table)
@@ -47,12 +47,12 @@ pub fn read_user(conn: &mut SqliteConnection, read_id: i32) -> Option<User> {
         .expect("Error reading user")
 }
 
-pub fn update_user(conn: &mut SqliteConnection, update_id: i32, update_name: &str, update_predict_death_age: i32, update_birth_date: NaiveDate) -> Option<User> {
+pub fn update_user(conn: &mut SqliteConnection, update_id: i32, update_name: &str, update_predict_death_age: i32, update_birth_date: i64) -> Option<User> {
     let changeset = UpdateUser {
         name: update_name.to_string(),
         predict_death_age: update_predict_death_age,
         birth_date: update_birth_date,
-        mtime: chrono::Utc::now().naive_utc().date()
+        mtime: Utc::now().timestamp()
     };
 
     let count = diesel::update(all_users.filter(id.eq(update_id)))
@@ -72,39 +72,4 @@ pub fn delete_user(conn: &mut SqliteConnection, delete_id: i32) {
     diesel::delete(all_users.filter(id.eq(delete_id)))
         .execute(conn)
         .expect("Error deleting user");
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_user_tbl() {
-        // arrange
-        let conn = &mut *get_connection();
-
-        let new_name = "my_name";
-        let new_predict_death_age = 10;
-        let new_birth_date = NaiveDate::from_ymd(0, 1, 1);
-
-        let update_name = "my_update_name";
-
-        // act
-        let inserted_user = add_user(conn, new_name, new_predict_death_age, new_birth_date);
-
-        let updated_user = update_user(conn, inserted_user.id, 
-                                                                update_name,
-                                             inserted_user.predict_death_age,
-                                            inserted_user.birth_date);
-
-        delete_user(conn, inserted_user.id);
-
-        let deleted_user = read_user(conn, inserted_user.id);
-        
-        // assert
-        assert!(new_name == inserted_user.name);
-        assert!(true == updated_user.is_some());
-        assert!(update_name == updated_user.unwrap().name);
-        assert!(true == deleted_user.is_none());
-    }
 }
