@@ -55,7 +55,7 @@ pub struct NewUser {
     pub mtime: i64 
 }
 
-#[derive(Queryable, Selectable, QueryableByName, Serialize, Deserialize, Debug, ToSchema)]
+#[derive(Queryable, Selectable, QueryableByName, Serialize, Deserialize, Debug, ToSchema, Clone)]
 #[diesel(table_name = blpt_tbl)]
 pub struct Blueprint {
     pub id: i32, // Key

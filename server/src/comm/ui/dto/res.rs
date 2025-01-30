@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 use crate::entity::Blueprint;
+use crate::enums::BlptCellType;
 
 #[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
 pub struct GetUserResponse {
@@ -14,6 +15,20 @@ pub struct GetUserResponse {
 #[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
 pub struct GetBlptListResponse {
     pub blpts: Vec<Blueprint>
+}
+
+#[derive(Serialize, Deserialize, Debug, ToSchema)]
+pub struct GetBlptCellListResponse {
+    pub blpt: Blueprint,
+    pub cell_start_dt: i64,
+    pub cell_end_dt: i64,
+    pub cells: Vec<GetBlptCellResponse>
+}
+
+#[derive(Serialize, Deserialize, Debug, ToSchema)]
+pub struct GetBlptCellResponse {
+    pub date: i64,
+    pub status: BlptCellType,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, ToSchema)]

@@ -45,6 +45,7 @@ fn create_api_router() -> Router {
             .route(ui_api_enp("/blpt").as_str(), post(handle_post_blpt))
             .route(ui_api_enp("/blpt/{blpt_id}").as_str(), put(handle_put_blpt))
             .route(ui_api_enp("/blpt/{blpt_id}").as_str(), delete(handle_delete_blpt))
+            .route(ui_api_enp("/blpt/{blpt_id}/cell").as_str(), get(handle_get_blpt_cell))
             .route(ui_api_enp("/ftpt").as_str(), get(handle_get_ftpt))
 }
 

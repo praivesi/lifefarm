@@ -40,6 +40,13 @@ pub async fn handle_delete_blpt(Path(blpt_id): Path<i32>) -> impl IntoResponse {
     }
 }
 
+pub async fn handle_get_blpt_cell(Path(blpt_id): Path<i32>) -> impl IntoResponse {
+    match ui_core::gen_blpt_cells(blpt_id) {
+        Ok(res) => Json(res).into_response(),
+        Err(result) => json_from(result).into_response()
+    }
+}
+
 pub async fn handle_get_ftpt() -> impl IntoResponse {
     match ui_core::get_ftpt() {
         Ok(res) => Json(res).into_response(),
