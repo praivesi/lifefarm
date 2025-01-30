@@ -45,6 +45,12 @@ pub fn add_blueprint(goal: &str, desc: &str, start_dt: i64, end_dt: i64) -> Blue
         .expect("Error loading the last inserted blueprint")
 }
 
+pub fn read_all() -> Vec<Blueprint> {
+    let conn = &mut *get_connection();
+
+    all_blpts.load::<Blueprint>(conn).expect("Error loading blueprints")
+}
+
 pub fn read_blpt(read_id: i32) -> Option<Blueprint> {
     let conn = &mut *get_connection();
 

@@ -10,6 +10,7 @@ use crate::schema::{user_tbl, blpt_tbl, ftpt_tbl};
 
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 #[derive(Queryable, Selectable, QueryableByName, Serialize, Deserialize, Debug)]
 #[diesel(table_name = user_tbl)]
@@ -54,7 +55,7 @@ pub struct NewUser {
     pub mtime: i64 
 }
 
-#[derive(Queryable, Selectable, QueryableByName, Serialize, Deserialize, Debug)]
+#[derive(Queryable, Selectable, QueryableByName, Serialize, Deserialize, Debug, ToSchema)]
 #[diesel(table_name = blpt_tbl)]
 pub struct Blueprint {
     pub id: i32, // Key
@@ -62,8 +63,8 @@ pub struct Blueprint {
     pub desc: String,
     pub start_dt: i64,
     pub end_dt: i64,
-    pub ctime: i64,
-    pub mtime: i64
+    #[serde(skip)] pub ctime: i64,
+    #[serde(skip)] pub mtime: i64
 }
 
 

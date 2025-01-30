@@ -21,16 +21,9 @@ pub fn get_user() -> Result<GetUserResponse, ErrorResult> {
 }
 
 pub fn get_blpt() -> Result<GetBlptListResponse, ErrorResult> {
-    Ok(GetBlptListResponse {
-        blpts: vec![
-            GetBlptResponse {
-                id: 0,
-                goal: "test".to_string(),
-                exp_hour: 10,
-                farm_portion: 10.0
-            }
-        ]
-    })
+    let blpts = blpt_repo::read_all();
+
+    Ok(GetBlptListResponse { blpts })
 }
 
 pub fn post_blpt(info: PostBlptRequest) -> Result<Blueprint, ErrorResult> {
