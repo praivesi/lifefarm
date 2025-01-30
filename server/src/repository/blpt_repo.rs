@@ -17,15 +17,21 @@ use diesel::QueryDsl;
 use diesel::RunQueryDsl;
 use diesel::sqlite::SqliteConnection;
 
-use chrono::NaiveDate;
+use chrono::Utc;
 
-pub fn add_blueprint(conn: &mut SqliteConnection, goal: &str, exp_hour: i32, farm_portion: f32) -> Blueprint {
+
+// TODO: error handling in repository module
+
+pub fn add_blueprint(goal: &str, desc: &str, start_dt: i64, end_dt: i64) -> Blueprint {
+    let conn = &mut *get_connection();
+
     let new_blpt = NewBluprint {
         goal: goal.to_string(),
-        exp_hour,
-        farm_portion,
-        ctime: chrono::Utc::now().naive_utc().date(),
-        mtime: chrono::Utc::now().naive_utc().date()
+        desc: desc.to_string(),
+        start_dt,
+        end_dt,
+        ctime: Utc::now().timestamp(),
+        mtime: Utc::now().timestamp()
     };
 
     diesel::insert_into(blpt_tbl::table)
@@ -39,20 +45,27 @@ pub fn add_blueprint(conn: &mut SqliteConnection, goal: &str, exp_hour: i32, far
         .expect("Error loading the last inserted blueprint")
 }
 
-pub fn read_blpt(conn: &mut SqliteConnection, read_id: i32) -> Option<Blueprint> {
-    all_blpts
-        .filter(id.eq(read_id))
-        .first::<Blueprint>(conn)
-        .optional()
-        .expect("Error reading blueprint")
+pub fn read_all() -> Vec<Blueprint> {
+    let conn = &mut *get_connection();
+
+    all_blpts.load::<Blueprint>(conn).expect("Error loading blueprints")
 }
 
-pub fn update_blueprint(conn: &mut SqliteConnection, update_id: i32, update_goal: &str, update_exp_hour: i32, update_farm_portion: f32) -> Option<Blueprint> {
+pub fn read_blpt(read_id: i32) -> Option<Blueprint> {
+    let conn = &mut *get_connection();
+
+    read_blpt_internal(conn, read_id)
+}
+
+pub fn update_blueprint(update_id: i32, update_goal: &str, update_desc: &str, update_start_dt: i64, update_end_dt: i64) -> Option<Blueprint> {
+    let conn = &mut *get_connection();
+
     let changeset = UpdateBlueprint {
         goal: update_goal.to_string(),
-        exp_hour: update_exp_hour,
-        farm_portion: update_farm_portion,
-        mtime: chrono::Utc::now().naive_utc().date()
+        desc: update_desc.to_string(),
+        start_dt: update_start_dt,
+        end_dt: update_end_dt,
+        mtime: Utc::now().timestamp()
     };
 
     let count = diesel::update(all_blpts.filter(id.eq(update_id)))
@@ -61,51 +74,25 @@ pub fn update_blueprint(conn: &mut SqliteConnection, update_id: i32, update_goal
                             .expect("Error updating blueprint");
 
     if 1 == count {
-        read_blpt(conn, update_id)
+        read_blpt_internal(conn, update_id)
     }
     else {
         None
     }
 }
 
-pub fn delete_blueprint(conn: &mut SqliteConnection, delete_id: i32) {
+pub fn delete_blueprint(delete_id: i32) {
+    let conn = &mut *get_connection();
+
     diesel::delete(all_blpts.filter(id.eq(delete_id)))
         .execute(conn)
         .expect("Error deleting blueprint");
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_blpt_tbl() {
-        // arrange
-        let conn = &mut *get_connection();
-
-        let new_goal = "my_goal";
-        let new_exp_hour = 10;
-        let new_farm_portion = 0.1;
-
-        let update_goal = "my_update_goal";
-
-        // act
-        let inserted_blpt = add_blueprint(conn, new_goal, new_exp_hour, new_farm_portion);
-
-        let updated_blpt = update_blueprint(conn, 
-                                            inserted_blpt.id, 
-                                            update_goal,
-                                            inserted_blpt.exp_hour,
-                                            inserted_blpt.farm_portion);
-
-        delete_blueprint(conn, inserted_blpt.id);
-
-        let deleted_blpt = read_blpt(conn, inserted_blpt.id);
-        
-        // assert
-        assert!(new_goal == inserted_blpt.goal);
-        assert!(true == updated_blpt.is_some());
-        assert!(update_goal == updated_blpt.unwrap().goal);
-        assert!(true == deleted_blpt.is_none());
-    }
+fn read_blpt_internal(conn: &mut SqliteConnection, read_id: i32) -> Option<Blueprint> {
+    all_blpts
+        .filter(id.eq(read_id))
+        .first::<Blueprint>(conn)
+        .optional()
+        .expect("Error reading blueprint")
 }

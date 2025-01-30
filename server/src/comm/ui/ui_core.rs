@@ -7,7 +7,9 @@ use axum::http::StatusCode;
 use super::dto::req::*;
 use super::dto::res::*;
 
+use crate::entity::Blueprint;
 use crate::util::rest::ErrorResult;
+use crate::repository::blpt_repo;
 
 pub fn get_user() -> Result<GetUserResponse, ErrorResult> {
     Ok(GetUserResponse {
@@ -19,16 +21,32 @@ pub fn get_user() -> Result<GetUserResponse, ErrorResult> {
 }
 
 pub fn get_blpt() -> Result<GetBlptListResponse, ErrorResult> {
-    Ok(GetBlptListResponse {
-        blpts: vec![
-            GetBlptResponse {
-                id: 0,
-                goal: "test".to_string(),
-                exp_hour: 10,
-                farm_portion: 10.0
-            }
-        ]
-    })
+    let blpts = blpt_repo::read_all();
+
+    Ok(GetBlptListResponse { blpts })
+}
+
+pub fn post_blpt(info: PostBlptRequest) -> Result<Blueprint, ErrorResult> {
+    let entity = blpt_repo::add_blueprint(&info.goal, &info.desc, info.start_dt, info.end_dt);
+
+    Ok(entity)
+}
+
+pub fn put_blpt(id: i32, info: PostBlptRequest) -> Result<Blueprint, ErrorResult> {
+    if let Some(entity) = blpt_repo::update_blueprint(id, &info.goal, &info.desc, info.start_dt, info.end_dt) {
+        Ok(entity)
+    } else {
+        Err(ErrorResult{
+            code: StatusCode::INTERNAL_SERVER_ERROR,
+            err_msg: format!("failed to update blueprint (id: {})", id)
+        })
+    }
+}
+
+pub fn delete_blpt(id: i32) -> Result<(), ErrorResult> {
+    blpt_repo::delete_blueprint(id);
+
+    Ok(())
 }
 
 pub fn get_ftpt() -> Result<GetFtptListResponse, ErrorResult> {
