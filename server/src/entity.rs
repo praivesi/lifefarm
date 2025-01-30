@@ -59,8 +59,9 @@ pub struct NewUser {
 pub struct Blueprint {
     pub id: i32, // Key
     pub goal: String,
-    pub exp_hour: i32,
-    pub farm_portion: f32,
+    pub desc: String,
+    pub start_dt: i64,
+    pub end_dt: i64,
     pub ctime: i64,
     pub mtime: i64
 }
@@ -70,8 +71,9 @@ pub struct Blueprint {
 #[diesel(table_name = blpt_tbl)]
 pub struct UpdateBlueprint {
     pub goal: String,
-    pub exp_hour: i32,
-    pub farm_portion: f32,
+    pub desc: String,
+    pub start_dt: i64,
+    pub end_dt: i64,
     pub mtime: i64
 }
 
@@ -80,8 +82,9 @@ impl Default for Blueprint {
         Blueprint {
             id: 0,
             goal: "".to_string(),
-            exp_hour: 0,
-            farm_portion: 0.0,
+            desc: "".to_string(),
+            start_dt: 0,
+            end_dt: 0,
             ctime: 0,
             mtime: 0,
         }
@@ -92,8 +95,9 @@ impl Default for Blueprint {
 #[diesel(table_name = blpt_tbl)]
 pub struct NewBluprint {
     pub goal: String,
-    pub exp_hour: i32,
-    pub farm_portion: f32,
+    pub desc: String,
+    pub start_dt: i64,
+    pub end_dt: i64,
     pub ctime: i64,
     pub mtime: i64 
 }

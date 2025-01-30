@@ -4,8 +4,9 @@ diesel::table! {
     blpt_tbl (id) {
         id -> Integer,
         goal -> Text,
-        exp_hour -> Integer,
-        farm_portion -> Float,
+        desc -> Text,
+        start_dt -> BigInt,
+        end_dt -> BigInt,
         ctime -> BigInt,
         mtime -> BigInt,
     }

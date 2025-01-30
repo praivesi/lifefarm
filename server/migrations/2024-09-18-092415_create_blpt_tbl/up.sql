@@ -1,8 +1,9 @@
 CREATE TABLE blpt_tbl (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    goal varchar(255) NOT NULL,
-    exp_hour INTEGER NOT NULL,
-    farm_portion REAL NOT NULL,
+    goal TEXT NOT NULL,
+    desc TEXT NOT NULL,
+    start_dt BIGINT NOT NULL,
+    end_dt BIGINT NOT NULL,
     ctime BIGINT NOT NULL,
     mtime BIGINT NOT NULL
 );
