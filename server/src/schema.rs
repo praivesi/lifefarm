@@ -16,7 +16,10 @@ diesel::table! {
     ftpt_tbl (id) {
         id -> Integer,
         blpt_id -> Integer,
-        cert -> Nullable<Binary>,
+        day_dt -> BigInt,
+        status -> Integer,
+        note -> Nullable<Text>,
+        photo -> Nullable<Binary>,
         ctime -> BigInt,
         mtime -> BigInt,
     }

@@ -1,0 +1,32 @@
+:root {
+  /* GitHub dark theme palette */
+  --color-bg: #0d1117;
+  --color-surface: #161b22;
+  --color-surface-hover: #1c2128;
+  --color-border: #30363d;
+  --color-border-muted: #21262d;
+
+  --color-text: #c9d1d9;
+  --color-text-muted: #8b949e;
+  --color-text-bright: #f0f6fc;
+
+  --color-accent: #58a6ff;
+  --color-flag: #21262d;
+  --color-flag-text: #58a6ff;
+
+  /* GitHub contribution-graph green scale */
+  --color-pass: #26a641;
+  --color-pass-strong: #39d353;
+  --color-fail: #f85149;
+  --color-padding-border: #30363d;
+  --color-empty: #161b22;
+  --color-today: #58a6ff;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+
+  --grass-cell-size: 14px;
+  --grass-cell-gap: 3px;
+
+  color-scheme: dark;
+}

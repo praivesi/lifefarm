@@ -51,7 +51,10 @@ pub fn create_db() {
 fn run_migrations() {
     let mut conn = get_connection();
 
-    for subdir in MIGRATION_DIR.dirs() {
+    let mut subdirs: Vec<_> = MIGRATION_DIR.dirs().collect();
+    subdirs.sort_by_key(|d| d.path());
+
+    for subdir in subdirs {
         for mg_file in subdir.files() {
             match mg_file.path().file_name() {
                 Some(name) => {
@@ -62,20 +65,28 @@ fn run_migrations() {
                 None => continue,
             }
 
-            match mg_file.contents_utf8() {
-                Some(sql) => match diesel::sql_query(sql).execute(&mut *conn) {
-                    Ok(_) => {},
-                    Err(_e) => {}
-                    // Ok(_) => {trace!("Migration file: {:?}", mg_file.path().display())},
-                    // Err(e) => {error!("Failed to run migration: {}", e)},
-                },
-                None => {
-                //     error!(
-                //     "Failed to read migration file: {:?}",
-                //     mg_file.path().display()
-                // )
-            },
+            let sql = match mg_file.contents_utf8() {
+                Some(sql) => sql,
+                None => panic!("Failed to read migration file: {:?}", mg_file.path().display()),
+            };
+
+            // sql_query only runs a single statement, so split the file on
+            // statement-terminating semicolons and run each one in order.
+            for statement in split_sql_statements(sql) {
+                diesel::sql_query(statement)
+                    .execute(&mut *conn)
+                    .unwrap_or_else(|e| panic!(
+                        "Failed to run migration {:?}: {}\nstatement: {}",
+                        mg_file.path().display(), e, statement
+                    ));
             }
         }
     }
+}
+
+fn split_sql_statements(sql: &str) -> Vec<&str> {
+    sql.split(';')
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .collect()
 }

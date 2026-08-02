@@ -29,6 +29,8 @@ pub struct GetBlptCellListResponse {
 pub struct GetBlptCellResponse {
     pub date: i64,
     pub status: BlptCellType,
+    pub is_today: bool,
+    pub note: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
@@ -40,5 +42,21 @@ pub struct GetFtptListResponse {
 pub struct GetFtptRepsponse {
     pub id: i32,
     pub blpt_id: i32,
-    pub cert: Option<String>
+    pub day_dt: i64,
+    pub status: i32,
+    pub note: Option<String>
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
+pub struct GetLifeFarmResponse {
+    pub birth_date: i64,
+    pub predict_death_age: i32,
+    pub cells: Vec<LifeFarmCell>
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
+pub struct LifeFarmCell {
+    pub day_dt: i64,
+    pub target_rate: f32,
+    pub actual_rate: f32
 }

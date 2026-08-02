@@ -15,3 +15,10 @@ pub struct PostBlptRequest {
     pub start_dt: i64,
     pub end_dt: i64
 }
+
+#[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
+pub struct PostFtptRequest {
+    pub day_dt: i64,
+    pub status: i32,
+    pub note: Option<String>
+}

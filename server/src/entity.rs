@@ -103,12 +103,15 @@ pub struct NewBluprint {
     pub mtime: i64 
 }
 
-#[derive(Queryable, Selectable, QueryableByName, Serialize, Deserialize, Debug)]
+#[derive(Queryable, Selectable, QueryableByName, Serialize, Deserialize, Debug, Clone)]
 #[diesel(table_name = ftpt_tbl)]
 pub struct Footprint {
     pub id: i32, // Key
     pub blpt_id: i32,
-    pub cert: Option<Vec<u8>>,
+    pub day_dt: i64,
+    pub status: i32,
+    pub note: Option<String>,
+    pub photo: Option<Vec<u8>>,
     pub ctime: i64,
     pub mtime: i64
 }
@@ -116,9 +119,9 @@ pub struct Footprint {
 #[derive(AsChangeset)]
 #[diesel(table_name = ftpt_tbl)]
 pub struct UpdateFootprint {
-    pub id: i32, // Key
-    pub blpt_id: i32,
-    pub cert: Option<Vec<u8>>,
+    pub status: i32,
+    pub note: Option<String>,
+    pub photo: Option<Vec<u8>>,
     pub mtime: i64
 }
 
@@ -127,7 +130,10 @@ impl Default for Footprint {
         Footprint {
             id: 0,
             blpt_id: 0,
-            cert: None,
+            day_dt: 0,
+            status: 0,
+            note: None,
+            photo: None,
             ctime: 0,
             mtime: 0,
         }
@@ -138,7 +144,10 @@ impl Default for Footprint {
 #[diesel(table_name = ftpt_tbl)]
 pub struct NewFootprint {
     pub blpt_id: i32,
-    pub cert: Option<Vec<u8>>,
+    pub day_dt: i64,
+    pub status: i32,
+    pub note: Option<String>,
+    pub photo: Option<Vec<u8>>,
     pub ctime: i64,
-    pub mtime: i64 
+    pub mtime: i64
 }
