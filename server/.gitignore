@@ -103,3 +103,6 @@ static_dist/
 
 # Local dev database
 db.sqlite
+
+# Local secrets (Notion token, DB config)
+.env

@@ -13,6 +13,18 @@
     <GrassGrid v-if="cells.length" :cells="cells" compact />
     <p v-else class="loading">로딩중...</p>
 
+    <div v-if="children.length" class="sub-goals" @click.stop>
+      <BlueprintCard
+        v-for="child in children"
+        :key="child.id"
+        :blueprint="child"
+        :all-blueprints="allBlueprints"
+        @open="(id) => $emit('open', id)"
+        @edit="(b) => $emit('edit', b)"
+        @delete="(id) => $emit('delete', id)"
+      />
+    </div>
+
     <div v-if="isArchived" class="archived-overlay"></div>
   </div>
 </template>
@@ -23,7 +35,10 @@ import GrassGrid from './GrassGrid.vue'
 import { getBlueprintCells } from '../api/footprints'
 import type { Blueprint, BlptCell } from '../api/types'
 
-const props = defineProps<{ blueprint: Blueprint }>()
+const props = defineProps<{
+  blueprint: Blueprint
+  allBlueprints?: Blueprint[]
+}>()
 const emit = defineEmits<{
   (e: 'open', id: number): void
   (e: 'edit', blueprint: Blueprint): void
@@ -34,13 +49,17 @@ const cells = ref<BlptCell[]>([])
 
 const isArchived = computed(() => props.blueprint.end_dt * 1000 < Date.now())
 
+const children = computed(() =>
+  (props.allBlueprints ?? []).filter((b) => b.parent_id === props.blueprint.id)
+)
+
 onMounted(async () => {
   const res = await getBlueprintCells(props.blueprint.id)
   cells.value = res.cells
 })
 
 function confirmDelete() {
-  if (window.confirm(`'${props.blueprint.goal}' Blueprint를 삭제할까요? 관련 기록도 함께 삭제됩니다.`)) {
+  if (window.confirm(`'${props.blueprint.goal}' Blueprint를 삭제할까요? 하위 목표와 관련 기록도 함께 삭제됩니다.`)) {
     emit('delete', props.blueprint.id)
   }
 }
@@ -131,5 +150,24 @@ function confirmDelete() {
 
 .card.archived {
   opacity: 0.7;
+}
+
+.sub-goals {
+  margin-top: 10px;
+  padding-left: 12px;
+  border-left: 2px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: default;
+}
+
+.sub-goals .card {
+  padding: 8px 10px;
+}
+
+.sub-goals .flag {
+  font-size: 0.8rem;
+  padding: 2px 8px;
 }
 </style>

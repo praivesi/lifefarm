@@ -1,6 +1,11 @@
 <template>
   <div class="app-shell">
-    <AppHeader @add-blueprint="showBlueprintForm = true" @open-settings="showUserSettings = true" />
+    <AppHeader
+      :syncing="syncing"
+      @add-blueprint="showBlueprintForm = true"
+      @open-settings="showUserSettings = true"
+      @sync-blueprints="handleSyncBlueprints"
+    />
 
     <main class="app-content">
       <RouterView />
@@ -37,6 +42,7 @@ const blueprintStore = useBlueprintStore()
 
 const showUserSettings = ref(false)
 const showBlueprintForm = ref(false)
+const syncing = ref(false)
 
 onMounted(() => {
   userStore.fetchUser()
@@ -50,6 +56,21 @@ async function handleSaveUser(payload: Omit<User, 'id'>) {
 async function handleCreateBlueprint(payload: BlueprintPayload) {
   await blueprintStore.create(payload)
   showBlueprintForm.value = false
+}
+
+async function handleSyncBlueprints() {
+  if (syncing.value) return
+
+  syncing.value = true
+  try {
+    const result = await blueprintStore.sync()
+    alert(`Notion 동기화 완료 (생성 ${result.created_cnt}건, 업데이트 ${result.updated_cnt}건)`)
+  } catch (e) {
+    alert('Notion 동기화에 실패했습니다.')
+    throw e
+  } finally {
+    syncing.value = false
+  }
 }
 </script>
 

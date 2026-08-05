@@ -17,6 +17,13 @@ pub struct GetBlptListResponse {
     pub blpts: Vec<Blueprint>
 }
 
+#[derive(Serialize, Deserialize, Debug, Default, ToSchema)]
+pub struct SyncBlptResponse {
+    pub blpts: Vec<Blueprint>,
+    pub created_cnt: i32,
+    pub updated_cnt: i32
+}
+
 #[derive(Serialize, Deserialize, Debug, ToSchema)]
 pub struct GetBlptCellListResponse {
     pub blpt: Blueprint,

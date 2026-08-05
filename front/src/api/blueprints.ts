@@ -26,3 +26,14 @@ export async function updateBlueprint(id: number, payload: BlueprintPayload): Pr
 export async function deleteBlueprint(id: number): Promise<void> {
   await apiClient.delete(`/front/blpt/${id}`)
 }
+
+export interface SyncBlueprintResult {
+  blpts: Blueprint[]
+  created_cnt: number
+  updated_cnt: number
+}
+
+export async function syncBlueprints(): Promise<SyncBlueprintResult> {
+  const res = await apiClient.post<SyncBlueprintResult>('/front/blpt/sync')
+  return res.data
+}

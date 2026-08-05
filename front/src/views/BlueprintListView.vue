@@ -8,9 +8,10 @@
 
     <div class="grid">
       <BlueprintCard
-        v-for="blpt in blueprintStore.list"
+        v-for="blpt in topLevelBlueprints"
         :key="blpt.id"
         :blueprint="blpt"
+        :all-blueprints="blueprintStore.list"
         @open="goToDetail"
         @edit="startEdit"
         @delete="handleDelete"
@@ -27,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import BlueprintCard from '../components/BlueprintCard.vue'
 import BlueprintFormModal from '../components/BlueprintFormModal.vue'
@@ -39,6 +40,10 @@ const router = useRouter()
 const blueprintStore = useBlueprintStore()
 
 const editingBlueprint = ref<Blueprint | null>(null)
+
+const topLevelBlueprints = computed(() =>
+  blueprintStore.list.filter((b) => b.parent_id === null)
+)
 
 onMounted(() => {
   blueprintStore.fetchList()

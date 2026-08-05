@@ -19,6 +19,30 @@ lazy_static! {
     };
 }
 
+pub async fn get_with_headers(url: &str, headers: &[(&str, &str)]) -> Result<String, StatusCode> {
+    let mut req = CLIENT.get(url);
+    for (key, value) in headers {
+        req = req.header(*key, *value);
+    }
+
+    if let Ok(response) = req.send().await {
+        if response.status().is_success() {
+            let body = response.text().await
+                .expect(format!("failed to read response body from GET request (url: {})", url).as_str());
+
+            return Ok(body);
+        }
+        else {
+            warn!("GET request failed. (url: {}, HTTP Error: {})", url, response.status());
+
+            return Err(response.status());
+        }
+    } else {
+        warn!("failed GET request to {}", url);
+        Err(StatusCode::FORBIDDEN)
+    }
+}
+
 pub async fn get(url: &str) -> Result<String, StatusCode> {
     if let Ok(response) = CLIENT.get(url).send().await {
         if response.status().is_success() {

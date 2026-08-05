@@ -22,7 +22,7 @@ use chrono::Utc;
 
 // TODO: error handling in repository module
 
-pub fn add_blueprint(goal: &str, desc: &str, start_dt: i64, end_dt: i64) -> Blueprint {
+pub fn add_blueprint(goal: &str, desc: &str, start_dt: i64, end_dt: i64, parent_id: Option<i32>) -> Blueprint {
     let conn = &mut *get_connection();
 
     let new_blpt = NewBluprint {
@@ -31,7 +31,8 @@ pub fn add_blueprint(goal: &str, desc: &str, start_dt: i64, end_dt: i64) -> Blue
         start_dt,
         end_dt,
         ctime: Utc::now().timestamp(),
-        mtime: Utc::now().timestamp()
+        mtime: Utc::now().timestamp(),
+        parent_id
     };
 
     diesel::insert_into(blpt_tbl::table)
@@ -57,7 +58,33 @@ pub fn read_blpt(read_id: i32) -> Option<Blueprint> {
     read_blpt_internal(conn, read_id)
 }
 
-pub fn update_blueprint(update_id: i32, update_goal: &str, update_desc: &str, update_start_dt: i64, update_end_dt: i64) -> Option<Blueprint> {
+pub fn find_by_goal_and_parent(find_goal: &str, find_parent_id: Option<i32>) -> Option<Blueprint> {
+    use crate::schema::blpt_tbl::{goal, parent_id};
+
+    let conn = &mut *get_connection();
+
+    let query = all_blpts.filter(goal.eq(find_goal));
+
+    match find_parent_id {
+        Some(pid) => query.filter(parent_id.eq(pid)).first::<Blueprint>(conn),
+        None => query.filter(parent_id.is_null()).first::<Blueprint>(conn),
+    }
+    .optional()
+    .expect("Error finding blueprint by goal and parent_id")
+}
+
+pub fn read_children(of_parent_id: i32) -> Vec<Blueprint> {
+    use crate::schema::blpt_tbl::parent_id;
+
+    let conn = &mut *get_connection();
+
+    all_blpts
+        .filter(parent_id.eq(of_parent_id))
+        .load::<Blueprint>(conn)
+        .expect("Error loading child blueprints")
+}
+
+pub fn update_blueprint(update_id: i32, update_goal: &str, update_desc: &str, update_start_dt: i64, update_end_dt: i64, update_parent_id: Option<i32>) -> Option<Blueprint> {
     let conn = &mut *get_connection();
 
     let changeset = UpdateBlueprint {
@@ -65,7 +92,8 @@ pub fn update_blueprint(update_id: i32, update_goal: &str, update_desc: &str, up
         desc: update_desc.to_string(),
         start_dt: update_start_dt,
         end_dt: update_end_dt,
-        mtime: Utc::now().timestamp()
+        mtime: Utc::now().timestamp(),
+        parent_id: update_parent_id
     };
 
     let count = diesel::update(all_blpts.filter(id.eq(update_id)))

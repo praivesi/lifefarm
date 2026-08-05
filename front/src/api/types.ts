@@ -11,6 +11,7 @@ export interface Blueprint {
   desc: string
   start_dt: number
   end_dt: number
+  parent_id: number | null
 }
 
 export type BlptCellStatus = 'pass' | 'fail' | 'padding' | 'future'

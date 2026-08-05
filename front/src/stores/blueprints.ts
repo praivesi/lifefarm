@@ -5,7 +5,9 @@ import {
   createBlueprint,
   updateBlueprint,
   deleteBlueprint,
-  type BlueprintPayload
+  syncBlueprints,
+  type BlueprintPayload,
+  type SyncBlueprintResult
 } from '../api/blueprints'
 import type { Blueprint } from '../api/types'
 
@@ -34,5 +36,11 @@ export const useBlueprintStore = defineStore('blueprints', () => {
     list.value = list.value.filter((b) => b.id !== id)
   }
 
-  return { list, fetchList, create, update, remove }
+  async function sync(): Promise<SyncBlueprintResult> {
+    const result = await syncBlueprints()
+    list.value = result.blpts
+    return result
+  }
+
+  return { list, fetchList, create, update, remove, sync }
 })

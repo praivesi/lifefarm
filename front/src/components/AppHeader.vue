@@ -8,6 +8,9 @@
     </nav>
 
     <div class="actions">
+      <button class="sync-btn" :disabled="syncing" title="Notion에서 Blueprint 동기화" @click="$emit('sync-blueprints')">
+        {{ syncing ? '동기화 중...' : 'Sync' }}
+      </button>
       <button class="icon-btn" title="Blueprint 추가" @click="$emit('add-blueprint')">＋</button>
       <button class="icon-btn" title="설정" @click="$emit('open-settings')">⚙</button>
     </div>
@@ -15,9 +18,14 @@
 </template>
 
 <script setup lang="ts">
+defineProps<{
+  syncing?: boolean
+}>()
+
 defineEmits<{
   (e: 'add-blueprint'): void
   (e: 'open-settings'): void
+  (e: 'sync-blueprints'): void
 }>()
 </script>
 
@@ -85,5 +93,28 @@ defineEmits<{
 .icon-btn:hover {
   background-color: var(--color-surface-hover);
   border-color: var(--color-accent);
+}
+
+.sync-btn {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  transition: background-color 0.1s, border-color 0.1s;
+}
+
+.sync-btn:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-accent);
+}
+
+.sync-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 </style>

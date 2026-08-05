@@ -9,6 +9,7 @@ diesel::table! {
         end_dt -> BigInt,
         ctime -> BigInt,
         mtime -> BigInt,
+        parent_id -> Nullable<Integer>,
     }
 }
 

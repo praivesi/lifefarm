@@ -10,6 +10,7 @@ use super::dto::res::*;
 use crate::enums::BlptCellType;
 use crate::entity::{Blueprint, Footprint};
 use crate::repository::{blpt_repo, ftpt_repo, user_repo};
+use crate::util::notion;
 use crate::util::rest::ErrorResult;
 use crate::util::time;
 
@@ -50,13 +51,15 @@ pub fn get_blpt() -> Result<GetBlptListResponse, ErrorResult> {
 }
 
 pub fn post_blpt(info: PostBlptRequest) -> Result<Blueprint, ErrorResult> {
-    let entity = blpt_repo::add_blueprint(&info.goal, &info.desc, info.start_dt, info.end_dt);
+    let entity = blpt_repo::add_blueprint(&info.goal, &info.desc, info.start_dt, info.end_dt, None);
 
     Ok(entity)
 }
 
 pub fn put_blpt(id: i32, info: PostBlptRequest) -> Result<Blueprint, ErrorResult> {
-    if let Some(entity) = blpt_repo::update_blueprint(id, &info.goal, &info.desc, info.start_dt, info.end_dt) {
+    let parent_id = blpt_repo::read_blpt(id).and_then(|b| b.parent_id);
+
+    if let Some(entity) = blpt_repo::update_blueprint(id, &info.goal, &info.desc, info.start_dt, info.end_dt, parent_id) {
         Ok(entity)
     } else {
         Err(ErrorResult{
@@ -66,7 +69,45 @@ pub fn put_blpt(id: i32, info: PostBlptRequest) -> Result<Blueprint, ErrorResult
     }
 }
 
+pub async fn sync_blpt_from_notion() -> Result<SyncBlptResponse, ErrorResult> {
+    let notion_blpts = notion::fetch_blueprints().await.map_err(|err_msg| ErrorResult {
+        code: StatusCode::BAD_GATEWAY,
+        err_msg: format!("failed to fetch blueprints from Notion: {}", err_msg)
+    })?;
+
+    let mut created_cnt = 0;
+    let mut updated_cnt = 0;
+
+    for nb in &notion_blpts {
+        sync_blueprint_tree(nb, None, &mut created_cnt, &mut updated_cnt);
+    }
+
+    Ok(SyncBlptResponse { blpts: blpt_repo::read_all(), created_cnt, updated_cnt })
+}
+
+fn sync_blueprint_tree(nb: &notion::NotionBlueprint, parent_id: Option<i32>, created_cnt: &mut i32, updated_cnt: &mut i32) {
+    let entity = match blpt_repo::find_by_goal_and_parent(&nb.goal, parent_id) {
+        Some(existing) => {
+            *updated_cnt += 1;
+            blpt_repo::update_blueprint(existing.id, &nb.goal, &nb.desc, nb.start_dt, nb.end_dt, parent_id)
+                .unwrap_or(existing)
+        }
+        None => {
+            *created_cnt += 1;
+            blpt_repo::add_blueprint(&nb.goal, &nb.desc, nb.start_dt, nb.end_dt, parent_id)
+        }
+    };
+
+    for child in &nb.children {
+        sync_blueprint_tree(child, Some(entity.id), created_cnt, updated_cnt);
+    }
+}
+
 pub fn delete_blpt(id: i32) -> Result<(), ErrorResult> {
+    for child in blpt_repo::read_children(id) {
+        delete_blpt(child.id)?;
+    }
+
     ftpt_repo::delete_all_by_blpt(id);
     blpt_repo::delete_blueprint(id);
 

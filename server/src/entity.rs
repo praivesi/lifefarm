@@ -64,7 +64,8 @@ pub struct Blueprint {
     pub start_dt: i64,
     pub end_dt: i64,
     #[serde(skip)] pub ctime: i64,
-    #[serde(skip)] pub mtime: i64
+    #[serde(skip)] pub mtime: i64,
+    pub parent_id: Option<i32>
 }
 
 
@@ -75,7 +76,8 @@ pub struct UpdateBlueprint {
     pub desc: String,
     pub start_dt: i64,
     pub end_dt: i64,
-    pub mtime: i64
+    pub mtime: i64,
+    pub parent_id: Option<i32>
 }
 
 impl Default for Blueprint {
@@ -88,6 +90,7 @@ impl Default for Blueprint {
             end_dt: 0,
             ctime: 0,
             mtime: 0,
+            parent_id: None,
         }
     }
 }
@@ -100,7 +103,8 @@ pub struct NewBluprint {
     pub start_dt: i64,
     pub end_dt: i64,
     pub ctime: i64,
-    pub mtime: i64 
+    pub mtime: i64,
+    pub parent_id: Option<i32>
 }
 
 #[derive(Queryable, Selectable, QueryableByName, Serialize, Deserialize, Debug, Clone)]

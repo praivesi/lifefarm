@@ -33,6 +33,13 @@ pub async fn handle_post_blpt(Json(info): Json<PostBlptRequest>) -> impl IntoRes
     }
 }
 
+pub async fn handle_post_blpt_sync() -> impl IntoResponse {
+    match ui_core::sync_blpt_from_notion().await {
+        Ok(res) => Json(res).into_response(),
+        Err(result) => json_from(result).into_response()
+    }
+}
+
 pub async fn handle_put_blpt(Path(blpt_id): Path<i32>, Json(info): Json<PostBlptRequest>) -> impl IntoResponse {
     match ui_core::put_blpt(blpt_id, info) {
         Ok(entity) => Json(entity).into_response(),
